@@ -57,6 +57,8 @@ class CoreApplicationTests {
     }
 
 
+	AnnotationConfigApplicationContext ac2 = new
+			AnnotationConfigApplicationContext(TestConfig.class);
 
 	@Configuration
 	static class TestConfig{
@@ -75,20 +77,20 @@ class CoreApplicationTests {
 	@DisplayName("타입으로 조회시 같은 타입을 가진 빈이 둘 이상이면, 에러를 내 뱉는다.")
 	void findBeanByTypeDulicated(){
 		assertThrows(NoUniqueBeanDefinitionException.class, () ->
-				ac.getBean(MemberRepository.class));
+				ac2.getBean(MemberRepository.class));
 	}
 
 	@Test
 	@DisplayName("타입으로 조회시 같은 타입이 둘 이상 있으면, 빈 이름을 지정하면 된다")
 	void findBeanByTypeWithName() {
-		MemberRepository memberRepository = ac.getBean("memberRepository1", MemberRepository.class);
+		MemberRepository memberRepository = ac2.getBean("memberRepository1", MemberRepository.class);
 		assertThat(memberRepository).isInstanceOf(MemberRepository.class);
 	}
 	@Test
 	@DisplayName("특정 타입을 모두 조회")
 	void findAllBeanByType() {
 		// getBeansOfType()을 사용하면 해당 타입의 모든 빈을 조회할 수 있다.
-		Map<String, MemberRepository> beansOfType = ac.getBeansOfType(MemberRepository.class);
+		Map<String, MemberRepository> beansOfType = ac2.getBeansOfType(MemberRepository.class);
 		for (String key : beansOfType.keySet()) {
 			System.out.println("key = " + key + " value = " +
 					beansOfType.get(key));
@@ -102,10 +104,10 @@ class CoreApplicationTests {
 	@Test
 	@DisplayName("빈 설정 메타정보 확인")
 	void findApplicationBean() {
-		String[] beanDefinitionNames = ac.getBeanDefinitionNames();
+		String[] beanDefinitionNames = ac2.getBeanDefinitionNames();
 		for (String beanDefinitionName : beanDefinitionNames) {
 			BeanDefinition beanDefinition =
-					ac.getBeanDefinition(beanDefinitionName);
+					ac2.getBeanDefinition(beanDefinitionName);
 			if (beanDefinition.getRole() == BeanDefinition.ROLE_APPLICATION) {
 				System.out.println("beanDefinitionName" + beanDefinitionName +
 						" beanDefinition = " + beanDefinition);
